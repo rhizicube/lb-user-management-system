@@ -17,7 +17,7 @@ func main() {
 	sr.GET("/user/:id", controllers.FindUser)
 	sr.PATCH("/user/:id", controllers.UpdateUser) // for update we use PATCH
 	sr.DELETE("/user/:id", controllers.DeleteUser)
-	sr.Run("localhost:8080") // run our server
+	sr.Run("localhost:8000") // run our server
 }
 
 //validation-
