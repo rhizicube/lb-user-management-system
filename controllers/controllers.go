@@ -4,6 +4,8 @@ import (
 	"lb-user-management-system/models"
 	"net/http"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,8 +20,10 @@ func FindUsers(ctx *gin.Context) {
 func CreateUser(ctx *gin.Context) {
 	//validate User
 	var input models.CreateUser
-	if err := ctx.ShouldBindJSON(&input); err != nil { // syntax??
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+		}).Errorf("%s", err)
 		return
 	}
 	//create user
@@ -32,7 +36,10 @@ func CreateUser(ctx *gin.Context) {
 func FindUser(ctx *gin.Context) {
 	var book models.User
 	if err := models.DB.Where("id = ?", ctx.Param("id")).First(&book).Error; err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+			"id":    ctx.Param("id"),
+		}).Errorf("Failed to find the book with id %s", ctx.Param("id"))
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"data": book})
@@ -43,13 +50,18 @@ func UpdateUser(ctx *gin.Context) {
 	//get model if exist
 	var user models.User
 	if err := models.DB.Where("id = ?", ctx.Param("id")).First(&user).Error; err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "no record found"})
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+			"id":    ctx.Param("id"),
+		}).Errorf("no record found")
 		return
 	}
-	//validate theinput
+	//validate the input
 	var input models.UpdateUser
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+		}).Errorf("input format incorrect")
 		return
 	}
 	models.DB.Model(&user).Update(input) // update the model with Model()
@@ -61,7 +73,10 @@ func DeleteUser(ctx *gin.Context) {
 	//find the user
 	var user models.User
 	if err := models.DB.Where("id = ?", ctx.Param("id")).First(&user).Error; err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+			"id":    ctx.Param("id"),
+		}).Errorf("no record found")
 		return
 	}
 	//delete the user from database using delete() provided by middleware
