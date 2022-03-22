@@ -1,23 +1,13 @@
-FROM golang:alpine
-
-RUN apk update && apk add --no-cache git
+FROM golang:latest
 
 RUN mkdir /app
 
+ADD . /app
+
 WORKDIR /app
 
-COPY go.mod /app
-COPY go.sum /app
-
-RUN go mod download
-
-COPY . /app
-
-RUN go get github.com/githubnemo/CompileDaemon     
+RUN go build -o main .
 
 EXPOSE 8000
 
-# CMD ["go run main.go"]
-CMD ["go", "run", "main.go"]
-# ENTRYPOINT [ "go","run" ]
-# CMD ["main.go"]
+CMD [ "/app/main" ]
