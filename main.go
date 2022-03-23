@@ -5,9 +5,12 @@ import (
 	"lb-user-management-system/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	logrus.SetLevel(logrus.DebugLevel) //setting level to debug
+
 	sr := gin.Default() // initialize new Default router within sr variable
 
 	models.ConnectDataBase()
