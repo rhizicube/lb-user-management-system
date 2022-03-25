@@ -52,7 +52,8 @@ func UpdateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	models.DB.Model(&user).Update(input) // update the model with Model()
+	// models.DB.Model(&user).Update(input)
+	// update the model with Model()
 	ctx.JSON(http.StatusOK, gin.H{"data": user})
 }
 

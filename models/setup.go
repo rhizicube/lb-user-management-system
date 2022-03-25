@@ -1,27 +1,22 @@
-// create connection with database
-//gorm.Open method creates new connection with databse
-//print error msg if failed to connect
-//migrate all models using AutoMigrate
-//assign database to package level variable
-
 package models
 
 import (
-	"github.com/jinzhu/gorm"
-
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func ConnectDataBase() {
-	database, err := gorm.Open("sqlite3", "test.db") //using SQLite database & store data inside test.db
+	dsn := "lalit:1233@tcp(dreamy_spence:3306)/golang_api?charset=utf8mb4&parseTime=True&loc=Local"
+	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil { // incase we fail to connect to db, we print error on console
 		panic("Failed to connect to database")
 	}
 
 	database.AutoMigrate(&User{}) //migrate database schema using AutoMigrate , for each model we have to call this method
+	database.AutoMigrate(&UpdateUser{})
 
 	DB = database
 }

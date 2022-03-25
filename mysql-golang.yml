@@ -1,0 +1,26 @@
+services:
+  dreamy_spence:
+    image: mysql/mysql-server:latest
+    volumes:
+      - /home/lalit/repos/rhizicube/mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - proxynet
+    hostname: dreamy_spence
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  golang:
+    image: apigo:15.0
+    ports:
+      - "8000:8000"
+    networks:
+      - proxynet
+    depends_on:
+      dreamy_spence:
+        condition: service_healthy
+networks:
+  proxynet:
+    driver: bridge
